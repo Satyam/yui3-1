@@ -729,4 +729,5 @@ Y.extend(DataTableScroll, Y.Plugin.Base, {
 Y.namespace("Plugin").DataTableScroll = DataTableScroll;
 
 
+
 }, '@VERSION@' ,{requires:['datatable-base','plugin']});

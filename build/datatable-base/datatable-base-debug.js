@@ -40,6 +40,7 @@ var YLang = Y.Lang,
     
 
 
+
 /**
  * The Column class defines and manages attributes of Columns for DataTable.
  *
@@ -373,61 +374,7 @@ Y.extend(Column, Y.Widget, {
      * @private
      */
     _getClassnames: function () {
-        return Y.ClassNameManager.getClassName(COLUMN, this.get("id"));
-        /*var allClasses;
-
-        // Add CSS classes
-        if(lang.isString(oColumn.className)) {
-            // Single custom class
-            allClasses = [oColumn.className];
-        }
-        else if(lang.isArray(oColumn.className)) {
-            // Array of custom classes
-            allClasses = oColumn.className;
-        }
-        else {
-            // no custom classes
-            allClasses = [];
-        }
-
-        // Hook for setting width with via dynamic style uses key since ID is too disposable
-        allClasses[allClasses.length] = this.getId() + "-col-" +oColumn.getSanitizedKey();
-
-        // Column key - minus any chars other than "A-Z", "a-z", "0-9", "_", "-", ".", or ":"
-        allClasses[allClasses.length] = "yui-dt-col-" +oColumn.getSanitizedKey();
-
-        var isSortedBy = this.get("sortedBy") || {};
-        // Sorted
-        if(oColumn.key === isSortedBy.key) {
-            allClasses[allClasses.length] = isSortedBy.dir || '';
-        }
-        // Hidden
-        if(oColumn.hidden) {
-            allClasses[allClasses.length] = DT.CLASS_HIDDEN;
-        }
-        // Selected
-        if(oColumn.selected) {
-            allClasses[allClasses.length] = DT.CLASS_SELECTED;
-        }
-        // Sortable
-        if(oColumn.sortable) {
-            allClasses[allClasses.length] = DT.CLASS_SORTABLE;
-        }
-        // Resizeable
-        if(oColumn.resizeable) {
-            allClasses[allClasses.length] = DT.CLASS_RESIZEABLE;
-        }
-        // Editable
-        if(oColumn.editor) {
-            allClasses[allClasses.length] = DT.CLASS_EDITABLE;
-        }
-
-        // Addtnl classes, including First/Last
-        if(aAddClasses) {
-            allClasses = allClasses.concat(aAddClasses);
-        }
-
-        return allClasses.join(' ');*/
+        return Y.ClassNameManager.getClassName(COLUMN, this.get("key").replace(/[^\w\-]/g,""));
     },
 
     ////////////////////////////////////////////////////////////////////////////
@@ -458,6 +405,7 @@ Y.extend(Column, Y.Widget, {
 });
 
 Y.Column = Column;
+
 /**
  * The Columnset class defines and manages a collection of Columns.
  *
@@ -859,6 +807,7 @@ Y.extend(Columnset, Y.Base, {
 });
 
 Y.Columnset = Columnset;
+
 /**
  * The DataTable widget provides a progressively enhanced DHTML control for
  * displaying tabular data across A-grade browsers.
@@ -1752,6 +1701,7 @@ Y.extend(DTBase, Y.Widget, {
 });
 
 Y.namespace("DataTable").Base = DTBase;
+
 
 
 }, '@VERSION@' ,{requires:['recordset-base','widget','substitute','event-mouseenter']});
