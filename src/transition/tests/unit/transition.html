@@ -168,7 +168,7 @@ YUI({
                 node.setStyle('opacity', '0');
                 node.show(true);
 
-                Y.later(550, null, function() {
+                Y.later(750, null, function() {
                     test.resume(function() {
                         Y.Assert.areEqual(1, node.getStyle('opacity'));
                         Y.Assert.areEqual('block', node.getStyle('display'));
@@ -233,7 +233,7 @@ YUI({
                     opacity: 1
                 });
 
-                Y.later(250, null, function() {
+                Y.later(300, null, function() {
                     test.resume(function() {
                         Y.Assert.areEqual(h, node.getComputedStyle('height'));
                         Y.Assert.areEqual(w, node.getComputedStyle('width'));
@@ -615,13 +615,11 @@ YUI({
                     test.resume(function () {
                         Y.Assert.areEqual('0px', node1.getComputedStyle('height'), 'item 1 height');
                         Y.Assert.areEqual('100px', node2.getComputedStyle('height'), 'item 2 height');
-                        Y.Assert.areEqual(2, parseInt(e.elapsedTime * 10));
                     });
                 });
 
                 test.wait(2500);
-            },
-
+            }
 
         }));
         suite.add(new Y.Test.Case({
@@ -686,7 +684,6 @@ YUI({
                     width: 0
                 }, function(e) {
                     test.resume(function() {
-                        Y.Assert.areEqual(1, parseInt(e.elapsedTime * 10));
                         Y.Assert.areEqual('200px', node.getComputedStyle('height'));
                         Y.Assert.areEqual('0px', node.getComputedStyle('width'));
                     });
@@ -707,7 +704,6 @@ YUI({
                     width: 0
                 }, function(e) {
                     test.resume(function() {
-                        Y.Assert.areEqual(1, parseInt(e.elapsedTime * 10));
                         Y.Assert.areEqual('0px', node.getComputedStyle('width'));
                     });
                 });
@@ -730,7 +726,6 @@ YUI({
                     paddingTop: '100px'
                 }, function(e) {
                     test.resume(function() {
-                        Y.Assert.areEqual(1, parseInt(e.elapsedTime * 10));
                         Y.Assert.areEqual('0px', node.getComputedStyle('width'));
                         Y.Assert.areEqual('0px', node.getComputedStyle('height'));
                         Y.Assert.areEqual('0', node.getComputedStyle('opacity'));
@@ -775,14 +770,11 @@ YUI({
                 node.transition({
                     easing: 'ease',
                     duration: 0.1,
-                    height: 0,
                     transform: 'rotate(180deg)'
                 }, function(e) {
                     test.resume(function() {
-                        Y.Assert.areEqual(1, parseInt(e.elapsedTime * 10));
-                        node.setStyle('height', '100px');
-                        if (Y.UA.webkit) {
-                            Y.Assert.areEqual('matrix(-1, 0.00000000000000012246467991473532, -0.00000000000000012246467991473532, -1, 0, 0)', node.getComputedStyle('WebkitTransform'));
+                        if (!(Y.UA.ie < 10)) {
+                            Y.Assert.isNotUndefined(node.getComputedStyle(Y.Transition._TRANSFORM));
                         }
                     });
                 });
@@ -809,7 +801,6 @@ YUI({
                 }, function(e) {
                     test.resume(function() {
                         var node = Y.one('.demo');
-                        Y.Assert.areEqual(1, parseInt(e.elapsedTime * 10));
                         Y.Assert.areEqual('0px', node.getComputedStyle('height'));
                     });
                 });
@@ -919,12 +910,15 @@ YUI({
                     count = 0;
 
                 nodes.toggleView('fade', function() {
-                    test.resume(function () {
-                        Y.Assert.areEqual('none', nodes.item(0).getStyle('display'));
-                        Y.Assert.areEqual('none', nodes.item(1).getStyle('display'));
-                        Y.Assert.areEqual('0', nodes.item(0).getStyle('opacity'));
-                        Y.Assert.areEqual('0', nodes.item(1).getStyle('opacity'));
-                    });
+                    if (!count) {
+                        count++;
+                        test.resume(function () {
+                            Y.Assert.areEqual('none', nodes.item(0).getStyle('display'));
+                            Y.Assert.areEqual('none', nodes.item(1).getStyle('display'));
+                            Y.Assert.areEqual('0', nodes.item(0).getStyle('opacity'));
+                            Y.Assert.areEqual('0', nodes.item(1).getStyle('opacity'));
+                        });
+                    }
                 });
 
                 test.wait(1000);
@@ -976,14 +970,13 @@ YUI({
                 var test = this,
                     resumed = false;
 
-                Y.all('.demo').transition({duration: 0.15, opacity: 0}, function(e) {
+                Y.all('.demo').transition({duration: 0.5, opacity: 0}, function(e) {
                     if (!resumed) {
                         test.resume(function() {
                             resumed = true;
                             var nodes = Y.all('.demo');
                             Y.Assert.areEqual(0, nodes.item(0).getStyle('opacity'));
                             Y.Assert.areEqual(0, nodes.item(1).getStyle('opacity'));
-                            Y.Assert.areEqual(1, parseInt(e.elapsedTime * 10));
                         });
                     }
                 });

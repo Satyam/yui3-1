@@ -219,9 +219,7 @@ Y.Router = Y.extend(Router, Y.Base, {
         this.once(EVT_READY, function () {
             this._ready = true;
 
-            if (this._html5 && this.upgrade()) {
-                return;
-            } else {
+            if (!this.upgrade()) {
                 this._dispatch(this._getPath(), this._getURL());
             }
         });
@@ -635,7 +633,7 @@ Y.Router = Y.extend(Router, Y.Base, {
         res = self._getResponse(req);
 
         req.next = function (err) {
-            var callback, route;
+            var callback, name, route;
 
             if (err) {
                 // Special case "route" to skip to the next route handler
@@ -649,10 +647,16 @@ Y.Router = Y.extend(Router, Y.Base, {
 
             } else if ((callback = callbacks.shift())) {
                 if (typeof callback === 'string') {
-                    callback = self[callback];
+                    name     = callback;
+                    callback = self[name];
+
+                    if (!callback) {
+                        Y.error('Router: Callback not found: ' + name, null, 'router');
+                    }
                 }
 
-                // Allow access to the num or remaining callbacks for the route.
+                // Allow access to the number of remaining callbacks for the
+                // route.
                 req.pendingCallbacks = callbacks.length;
 
                 callback.call(self, req, res, req.next);
@@ -674,7 +678,8 @@ Y.Router = Y.extend(Router, Y.Base, {
                     req.params = matches.concat();
                 }
 
-                // Allow access to the num of remaining routes for this request.
+                // Allow access to the number of remaining routes for this
+                // request.
                 req.pendingRoutes = routes.length;
 
                 // Execute this route's `callbacks`.
@@ -1146,7 +1151,7 @@ Y.Router = Y.extend(Router, Y.Base, {
     **/
     _save: function (url, replace) {
         var urlIsString = typeof url === 'string',
-            currentPath, root;
+            currentPath, root, hash;
 
         // Perform same-origin check on the specified URL.
         if (urlIsString && !this._hasSameOrigin(url)) {
@@ -1168,6 +1173,11 @@ Y.Router = Y.extend(Router, Y.Base, {
         } else {
             currentPath = Y.getLocation().pathname;
             root        = this.get('root');
+            hash        = HistoryHash.getHash();
+
+            if (!urlIsString) {
+                url = hash;
+            }
 
             // Determine if the `root` already exists in the current location's
             // `pathname`, and if it does then we can exclude it from the
@@ -1179,7 +1189,7 @@ Y.Router = Y.extend(Router, Y.Base, {
             // The `hashchange` event only fires when the new hash is actually
             // different. This makes sure we'll always dequeue and dispatch
             // _all_ router instances, mimicking the HTML5 behavior.
-            if (url === HistoryHash.getHash()) {
+            if (url === hash) {
                 Y.Router.dispatch();
             } else {
                 HistoryHash[replace ? 'replaceHash' : 'setHash'](url);

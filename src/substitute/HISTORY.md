@@ -1,6 +1,26 @@
 Substitute Utility Change History
 =================================
 
+3.10.1
+------
+
+* No changes.
+
+3.10.0
+------
+
+* No changes.
+
+3.9.1
+-----
+
+* No changes.
+
+3.9.0
+-----
+
+* Officially Deprecating.
+
 3.8.1
 -----
 
@@ -9,7 +29,7 @@ Substitute Utility Change History
 3.8.0
 -----
 
-  * No changes.
+* No changes.
 
 3.7.3
 -----
@@ -34,17 +54,17 @@ Substitute Utility Change History
 3.6.0
 -----
 
-  * No changes.
+* No changes.
 
 3.5.1
 -----
 
-  * No changes.
+* No changes.
 
 3.5.0
 -----
 
-  * No changes.
+* No changes.
 
 3.4.1
 -----

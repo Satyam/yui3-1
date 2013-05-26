@@ -1,6 +1,31 @@
 Console Change History
 ======================
 
+@VERSION@
+-------
+
+* Added Hungarian language support [Gábor Kovács]
+
+3.10.1
+------
+
+* No changes.
+
+3.10.0
+------
+
+* Add italian language files to the components. [albertosantini]
+
+3.9.1
+-----
+
+* No changes.
+
+3.9.0
+-----
+
+* No changes.
+
 3.8.1
 -----
 

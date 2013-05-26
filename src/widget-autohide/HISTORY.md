@@ -1,6 +1,26 @@
 Widget Autohide Change History
 ==============================
 
+3.10.1
+------
+
+* No changes.
+
+3.10.0
+------
+
+* No changes.
+
+3.9.1
+-----
+
+* No changes.
+
+3.9.0
+-----
+
+* No changes.
+
 3.8.1
 -----
 
@@ -9,7 +29,7 @@ Widget Autohide Change History
 3.8.0
 -----
 
-  * No changes.
+* No changes.
 
 3.7.3
 -----

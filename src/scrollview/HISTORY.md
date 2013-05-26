@@ -1,11 +1,43 @@
 ScrollView Change History
 =========================
 
+@VERSION@
+-----
+
+  * Paginator API methods now respect the widget's `disabled` ATTR
+
+3.10.1
+------
+
+* No changes.
+
+3.10.0
+------
+
+  * No changes.
+
+3.9.1
+-----
+
+  * No changes.
+
+3.9.0
+-----
+
+  * Improved accuracy of 'scrollEnd' event. (#2533030 & #2532323)
+
+  * Scrollbars now accurately represent the current offset within a dual-axis paginated instance. (#2532751)
+
+  * Paginator now blocks flick events on disabled instances. (#2533078)
+
+  * Paginator now prevents the host's flick listener from being executed (it should only listen for gesturemove events), as opposed to unbinding the listener. (SHA 42885f5)
+
 3.8.1
 -----
 
-* Linting cleanup.
-* Improvements to ScrollView's unit tests. PR #361
+  * Linting cleanup.
+
+  * Improvements to ScrollView's unit tests. PR #361
 
 3.8.0
 -----
@@ -14,26 +46,26 @@ ScrollView Change History
 
   * Fixed issue where Mousewheel could prevent next()/prev() API interaction on horizontally paginated instances (#2532815)
 
-  * scrollToIndex now sets correct default value for easing (#2532895) 
+  * scrollToIndex now sets correct default value for easing (#2532895)
 
   * ScrollViewPaginator#scrollToIndex now properly respects animation duration and easing arguments (thanks juandopazo)
-  
+
   * General cleanup
 
 3.7.3
 -----
 
-* No changes.
+  * No changes.
 
 3.7.2
 -----
 
-* No changes.
+  * No changes.
 
 3.7.1
 -----
 
-* No changes.
+  * No changes.
 
 3.7.0
 -----

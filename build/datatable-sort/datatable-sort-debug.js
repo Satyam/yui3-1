@@ -226,7 +226,7 @@ Y.mix(Sortable.prototype, {
     @value '<div class="{className}" tabindex="0"><span class="{indicatorClass}"></span></div>'
     @since 3.5.0
     **/
-    SORTABLE_HEADER_TEMPLATE: '<div class="{className}" tabindex="0"><span class="{indicatorClass}"></span></div>',
+    SORTABLE_HEADER_TEMPLATE: '<div class="{className}" tabindex="0" unselectable="on"><span class="{indicatorClass}"></span></div>',
 
     /**
     Reverse the current sort direction of one or more fields currently being
@@ -295,7 +295,7 @@ Y.mix(Sortable.prototype, {
     @protected
     @since 3.5.0
     **/
-    _afterSortByChange: function (e) {
+    _afterSortByChange: function () {
         // Can't use a setter because it's a chicken and egg problem. The
         // columns need to be set up to translate, but columns are initialized
         // from Core's initializer.  So construction-time assignment would
@@ -555,9 +555,8 @@ Y.mix(Sortable.prototype, {
     **/
     _onUITriggerSort: function (e) {
         var id = e.currentTarget.getAttribute('data-yui3-col-id'),
-            sortBy = e.shiftKey ? this.get('sortBy') : [{}],
             column = id && this.getColumn(id),
-            i, len;
+            sortBy, i, len;
 
         if (e.type === 'keydown' && e.keyCode !== 32) {
             return;
@@ -569,13 +568,15 @@ Y.mix(Sortable.prototype, {
 
         if (column) {
             if (e.shiftKey) {
+                sortBy = this.get('sortBy') || [];
+
                 for (i = 0, len = sortBy.length; i < len; ++i) {
                     if (id === sortBy[i]  || Math.abs(sortBy[i][id]) === 1) {
                         if (!isObject(sortBy[i])) {
                             sortBy[i] = {};
                         }
 
-                        sortBy[i][id] = -(column.sortDir|0) || 1;
+                        sortBy[i][id] = -(column.sortDir||0) || 1;
                         break;
                     }
                 }
@@ -584,7 +585,9 @@ Y.mix(Sortable.prototype, {
                     sortBy.push(column._id);
                 }
             } else {
-                sortBy[0][id] = -(column.sortDir|0) || 1;
+                sortBy = [{}];
+
+                sortBy[0][id] = -(column.sortDir||0) || 1;
             }
 
             this.fire('sort', {
@@ -844,10 +847,16 @@ Y.mix(Sortable.prototype, {
                 }
 
                 title = sub(this.getString(
-                    (col.sortDir === 1) ? 'reverseSortBy' : 'sortBy'), {
+                    (col.sortDir === 1) ? 'reverseSortBy' : 'sortBy'), // get string
+                    {
+                        title:  col.title || '',
+                        key:    col.key || '',
+                        abbr:   col.abbr || '',
+                        label:  col.label || '',
                         column: col.abbr || col.label ||
                                 col.key  || ('column ' + i)
-                });
+                    }
+                );
 
                 node.setAttribute('title', title);
                 // To combat VoiceOver from reading the sort title as the
@@ -893,4 +902,4 @@ Y.DataTable.Sortable = Sortable;
 Y.Base.mix(Y.DataTable, [Sortable]);
 
 
-}, '@VERSION@', {"requires": ["datatable-base"], "lang": ["en"], "skinnable": true});
+}, '@VERSION@', {"requires": ["datatable-base"], "lang": ["en", "fr", "es", "hu"], "skinnable": true});
