@@ -86,6 +86,7 @@ Y.mix(YUI.Env[Y.version].modules, {
             "model",
             "model-list",
             "model-sync-rest",
+            "model-sync-local",
             "router",
             "view",
             "view-node-map"
@@ -441,7 +442,8 @@ Y.mix(YUI.Env[Y.version].modules, {
         "requires": [
             "attribute-core",
             "classnamemanager",
-            "node-base"
+            "node-base",
+            "escape"
         ]
     },
     "button-group": {
@@ -503,6 +505,10 @@ Y.mix(YUI.Env[Y.version].modules, {
             "nl",
             "pt-BR",
             "ru",
+            "zh-Hans",
+            "zh-Hans-CN",
+            "zh-Hant",
+            "zh-Hant-HK",
             "zh-HANT-TW"
         ],
         "requires": [
@@ -626,6 +632,14 @@ Y.mix(YUI.Env[Y.version].modules, {
             "console"
         ],
         "skinnable": true
+    },
+    "content-editable": {
+        "requires": [
+            "node-base",
+            "editor-selection",
+            "stylesheet",
+            "plugin"
+        ]
     },
     "controller": {
         "use": [
@@ -900,6 +914,13 @@ Y.mix(YUI.Env[Y.version].modules, {
             "classnamemanager"
         ]
     },
+    "datatable-highlight": {
+        "requires": [
+            "datatable-base",
+            "event-hover"
+        ],
+        "skinnable": true
+    },
     "datatable-message": {
         "lang": [
             "en",
@@ -920,7 +941,8 @@ Y.mix(YUI.Env[Y.version].modules, {
     },
     "datatable-paginator": {
         "lang": [
-            "en"
+            "en",
+            "fr"
         ],
         "requires": [
             "model",
@@ -1214,11 +1236,6 @@ Y.mix(YUI.Env[Y.version].modules, {
             "features"
         ]
     },
-    "dom-deprecated": {
-        "requires": [
-            "dom-base"
-        ]
-    },
     "dom-screen": {
         "requires": [
             "dom-base",
@@ -1301,6 +1318,12 @@ Y.mix(YUI.Env[Y.version].modules, {
     "editor-br": {
         "requires": [
             "editor-base"
+        ]
+    },
+    "editor-inline": {
+        "requires": [
+            "editor-base",
+            "content-editable"
         ]
     },
     "editor-lists": {
@@ -1533,6 +1556,7 @@ Y.mix(YUI.Env[Y.version].modules, {
         "requires": [
             "base",
             "node",
+            "plugin",
             "selector-css3",
             "yui-throttle"
         ]
@@ -1933,6 +1957,12 @@ Y.mix(YUI.Env[Y.version].modules, {
             "model"
         ]
     },
+    "model-sync-local": {
+        "requires": [
+            "model",
+            "json-stringify"
+        ]
+    },
     "model-sync-rest": {
         "requires": [
             "model",
@@ -1953,18 +1983,14 @@ Y.mix(YUI.Env[Y.version].modules, {
         "requires": [
             "event-base",
             "node-core",
-            "dom-base"
+            "dom-base",
+            "dom-style"
         ]
     },
     "node-core": {
         "requires": [
             "dom-core",
             "selector"
-        ]
-    },
-    "node-deprecated": {
-        "requires": [
-            "node-base"
         ]
     },
     "node-event-delegate": {
@@ -2726,13 +2752,13 @@ Y.mix(YUI.Env[Y.version].modules, {
     },
     "uploader-flash": {
         "requires": [
-            "swf",
+            "swfdetect",
+            "escape",
             "widget",
             "base",
             "cssbutton",
             "node",
             "event-custom",
-            "file-flash",
             "uploader-queue"
         ]
     },
@@ -2819,11 +2845,6 @@ Y.mix(YUI.Env[Y.version].modules, {
         ]
     },
     "widget-htmlparser": {
-        "requires": [
-            "widget-base"
-        ]
-    },
-    "widget-locale": {
         "requires": [
             "widget-base"
         ]
@@ -2940,4 +2961,4 @@ Y.mix(YUI.Env[Y.version].modules, {
         ]
     }
 });
-YUI.Env[Y.version].md5 = 'b48f48e0499b41d980deaefd4100d336';
+YUI.Env[Y.version].md5 = '3cf02e5f307a6e9470df4ea0dc7eb41e';

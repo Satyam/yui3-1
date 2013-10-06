@@ -1,7 +1,18 @@
 Button Change History
 ====================
 
-@VERSION@
+3.13.0
+------
+
+* Added a `labelHTML` attribute to `Y.ButtonCore` for nested HTML label support
+* Due to a fix in `Y.Widget` (#1125), `Y.Button` now correctly retains all node attributes upon render
+
+3.12.0
+------
+
+* `ButtonGroup.disable()` will disable each child button (or input, see `getButtons()`)
+
+3.11.0
 ------
 
 * No changes.

@@ -1,7 +1,17 @@
 Drag and Drop Change History
 ============================
 
-@VERSION@
+3.13.0
+------
+
+* No changes.
+
+3.12.0
+------
+
+* No changes.
+
+3.11.0
 ------
 
 * No changes.

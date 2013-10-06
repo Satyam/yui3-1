@@ -638,7 +638,8 @@ YUI.add('dom-core-test', function(Y) {
 
         'should be true for contained comment node': function() {
             var node = document.createElement('div');
-            node.innerHTML = 'foo<!-- comment -->';
+            node.innerHTML = 'foo';
+            node.appendChild(document.createComment('bar'));
             Assert.isTrue(Y.DOM.contains(node, node.firstChild.nextSibling));
         },
 
@@ -1081,9 +1082,9 @@ YUI.add('dom-core-test', function(Y) {
         },
 
         'should create a link element with attrs': function() {
-            var el = Y.DOM.create('<link href="http://search.yahoo.com/" rel="stylesheet">');
+            var el = Y.DOM.create('<link id="test-link" rel="stylesheet">');
             Assert.areEqual('LINK', el.tagName);
-            Assert.areEqual('http://search.yahoo.com/', el.href);
+            Assert.areEqual('test-link', el.id);
             Assert.areEqual(el.rel, 'stylesheet');
         },
 

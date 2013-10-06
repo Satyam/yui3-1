@@ -355,15 +355,15 @@ proto = {
                 _loaded: {},
                 // serviced: {},
                 // Regex in English:
-                // I'll start at the \b(simpleyui).
-                // 1. Look in the test string for "simpleyui" or "yui" or
+                // I'll start at the \b(yui).
+                // 1. Look in the test string for "yui" or
                 //    "yui-base" or "yui-davglass" or "yui-foobar" that comes after a word break.  That is, it
-                //    can't match "foyui" or "i_heart_simpleyui". This can be anywhere in the string.
+                //    can't match "foyui" or "i_heart_yui". This can be anywhere in the string.
                 // 2. After #1 must come a forward slash followed by the string matched in #1, so
-                //    "yui-base/yui-base" or "simpleyui/simpleyui" or "yui-pants/yui-pants".
+                //    "yui-base/yui-base" or "yui-pants/yui-pants".
                 // 3. The second occurence of the #1 token can optionally be followed by "-debug" or "-min",
                 //    so "yui/yui-min", "yui/yui-debug", "yui-base/yui-base-debug". NOT "yui/yui-tshirt".
-                // 4. This is followed by ".js", so "yui/yui.js", "simpleyui/simpleyui-min.js"
+                // 4. This is followed by ".js", so "yui/yui.js".
                 // 0. Going back to the beginning, now. If all that stuff in 1-4 comes after a "?" in the string,
                 //    then capture the junk between the LAST "&" and the string in 1-4.  So
                 //    "blah?foo/yui/yui.js" will capture "foo/" and "blah?some/thing.js&3.3.0/build/yui-davglass/yui-davglass.js"
@@ -375,13 +375,13 @@ proto = {
                 //   *               in fact, find as many sets of characters followed by a & as you can
                 //   ([^&]*)         capture the stuff after the last & in \1
                 // )?                but it's ok if all this ?junk&more_junk stuff isn't even there
-                // \b(simpleyui|     after a word break find either the string "simpleyui" or
-                //    yui(?:-\w+)?   the string "yui" optionally followed by a -, then more characters
-                // )                 and store the simpleyui or yui-* string in \2
-                // \/\2              then comes a / followed by the simpleyui or yui-* string in \2
+                // \b(               after a word break find either the string
+                //    yui(?:-\w+)?   "yui" optionally followed by a -, then more characters
+                // )                 and store the yui-* string in \2
+                // \/\2              then comes a / followed by the yui-* string in \2
                 // (?:-(min|debug))? optionally followed by "-min" or "-debug"
                 // .js               and ending in ".js"
-                _BASE_RE: /(?:\?(?:[^&]*&)*([^&]*))?\b(simpleyui|yui(?:-\w+)?)\/\2(?:-(min|debug))?\.js/,
+                _BASE_RE: /(?:\?(?:[^&]*&)*([^&]*))?\b(yui(?:-\w+)?)\/\2(?:-(min|debug))?\.js/,
                 parseBasePath: function(src, pattern) {
                     var match = src.match(pattern),
                         path, filter;
@@ -1520,6 +1520,7 @@ Y.log('Fetching loader: ' + config.base + config.loaderPath, 'info', 'yui');
         YUI._getLoadHook = null;
     }
 
+    YUI.Env[VERSION] = {};
 }());
 
 
@@ -2289,6 +2290,17 @@ L.isObject = function(o, failfn) {
 };
 
 /**
+ * Determines whether or not the provided value is a regexp.
+ * @method isRegExp
+ * @static
+ * @param value The value or object to test.
+ * @return {boolean} true if value is a regexp.
+ */
+L.isRegExp = function(value) {
+    return L.type(value) === 'regexp';
+};
+
+/**
  * Determines whether or not the provided item is a string.
  * @method isString
  * @static
@@ -2877,7 +2889,7 @@ Y.cached = function (source, cache, refetch) {
         var key = arguments.length > 1 ?
                 Array.prototype.join.call(arguments, CACHED_DELIMITER) :
                 String(arg);
-        
+
         /*jshint eqeqeq: false*/
         if (!(key in cache) || (refetch && cache[key] == refetch)) {
             cache[key] = source.apply(source, arguments);
@@ -3220,8 +3232,8 @@ O.hasKey = owns;
  * as the order in which they were defined.
  *
  * This method is an alias for the native ES5 `Object.keys()` method if
- * available and non-buggy. The Opera 11.50 and Android 2.3.x versions of 
- * `Object.keys()` have an inconsistency as they consider `prototype` to be 
+ * available and non-buggy. The Opera 11.50 and Android 2.3.x versions of
+ * `Object.keys()` have an inconsistency as they consider `prototype` to be
  * enumerable, so a non-native shim is used to rectify the difference.
  *
  * @example
@@ -3889,7 +3901,7 @@ YUI.Env.parseUA = function(subUA) {
                     o.mobile = m[0]; // ex: Opera Mini/2.0.4509/1316
                 }
             } else { // not opera or webkit
-                m = ua.match(/MSIE ([^;]*)|Trident.*; rv ([0-9.]+)/);
+                m = ua.match(/MSIE ([^;]*)|Trident.*; rv:([0-9.]+)/);
 
                 if (m && (m[1] || m[2])) {
                     o.ie = numberify(m[1] || m[2]);
@@ -3991,7 +4003,7 @@ Y.UA.compareVersions = function (a, b) {
 YUI.Env.aliases = {
     "anim": ["anim-base","anim-color","anim-curve","anim-easing","anim-node-plugin","anim-scroll","anim-xy"],
     "anim-shape-transform": ["anim-shape"],
-    "app": ["app-base","app-content","app-transitions","lazy-model-list","model","model-list","model-sync-rest","router","view","view-node-map"],
+    "app": ["app-base","app-content","app-transitions","lazy-model-list","model","model-list","model-sync-rest","model-sync-local","router","view","view-node-map"],
     "attribute": ["attribute-base","attribute-complex"],
     "attribute-events": ["attribute-observable"],
     "autocomplete": ["autocomplete-base","autocomplete-sources","autocomplete-list","autocomplete-plugin"],
@@ -5973,7 +5985,7 @@ var NO_ARGS = [];
  * single time unless periodic is set to true.
  * @for YUI
  * @method later
- * @param when {int} the number of milliseconds to wait until the fn
+ * @param when {Number} the number of milliseconds to wait until the fn
  * is executed.
  * @param o the context object.
  * @param fn {Function|String} the function to execute or the name of
@@ -6041,98 +6053,110 @@ YUI.add('loader-base', function (Y, NAME) {
  * @submodule loader-base
  */
 
-if (!YUI.Env[Y.version]) {
-
-    (function() {
-        var VERSION = Y.version,
-            BUILD = '/build/',
-            ROOT = VERSION + '/',
-            CDN_BASE = Y.Env.base,
-            GALLERY_VERSION = 'gallery-2013.07.03-22-52',
-            TNT = '2in3',
-            TNT_VERSION = '4',
-            YUI2_VERSION = '2.9.0',
-            COMBO_BASE = CDN_BASE + 'combo?',
-            META = { version: VERSION,
-                              root: ROOT,
-                              base: Y.Env.base,
-                              comboBase: COMBO_BASE,
-                              skin: { defaultSkin: 'sam',
-                                           base: 'assets/skins/',
-                                           path: 'skin.css',
-                                           after: ['cssreset',
-                                                          'cssfonts',
-                                                          'cssgrids',
-                                                          'cssbase',
-                                                          'cssreset-context',
-                                                          'cssfonts-context']},
-                              groups: {},
-                              patterns: {} },
-            groups = META.groups,
-            yui2Update = function(tnt, yui2, config) {
-
-                var root = TNT + '.' +
-                        (tnt || TNT_VERSION) + '/' +
-                        (yui2 || YUI2_VERSION) + BUILD,
-                    base = (config && config.base) ? config.base : CDN_BASE,
-                    combo = (config && config.comboBase) ? config.comboBase : COMBO_BASE;
-
-                groups.yui2.base = base + root;
-                groups.yui2.root = root;
-                groups.yui2.comboBase = combo;
-            },
-            galleryUpdate = function(tag, config) {
-                var root = (tag || GALLERY_VERSION) + BUILD,
-                    base = (config && config.base) ? config.base : CDN_BASE,
-                    combo = (config && config.comboBase) ? config.comboBase : COMBO_BASE;
-
-                groups.gallery.base = base + root;
-                groups.gallery.root = root;
-                groups.gallery.comboBase = combo;
-            };
-
-
-        groups[VERSION] = {};
-
-        groups.gallery = {
-            ext: false,
-            combine: true,
+(function() {
+    var VERSION = Y.version,
+        BUILD = '/build/',
+        ROOT = VERSION + '/',
+        CDN_BASE = Y.Env.base,
+        GALLERY_VERSION = 'gallery-2013.10.02-20-26',
+        TNT = '2in3',
+        TNT_VERSION = '4',
+        YUI2_VERSION = '2.9.0',
+        COMBO_BASE = CDN_BASE + 'combo?',
+        META = {
+            version: VERSION,
+            root: ROOT,
+            base: Y.Env.base,
             comboBase: COMBO_BASE,
-            update: galleryUpdate,
-            patterns: { 'gallery-': { },
-                        'lang/gallery-': {},
-                        'gallerycss-': { type: 'css' } }
+            skin: {
+                defaultSkin: 'sam',
+                base: 'assets/skins/',
+                path: 'skin.css',
+                after: [
+                    'cssreset',
+                    'cssfonts',
+                    'cssgrids',
+                    'cssbase',
+                    'cssreset-context',
+                    'cssfonts-context'
+                ]
+            },
+            groups: {},
+            patterns: {}
+        },
+        groups = META.groups,
+        yui2Update = function(tnt, yui2, config) {
+            var root = TNT + '.' +
+                    (tnt || TNT_VERSION) + '/' +
+                    (yui2 || YUI2_VERSION) + BUILD,
+                base = (config && config.base) ? config.base : CDN_BASE,
+                combo = (config && config.comboBase) ? config.comboBase : COMBO_BASE;
+
+            groups.yui2.base = base + root;
+            groups.yui2.root = root;
+            groups.yui2.comboBase = combo;
+        },
+        galleryUpdate = function(tag, config) {
+            var root = (tag || GALLERY_VERSION) + BUILD,
+                base = (config && config.base) ? config.base : CDN_BASE,
+                combo = (config && config.comboBase) ? config.comboBase : COMBO_BASE;
+
+            groups.gallery.base = base + root;
+            groups.gallery.root = root;
+            groups.gallery.comboBase = combo;
         };
 
-        groups.yui2 = {
-            combine: true,
-            ext: false,
-            comboBase: COMBO_BASE,
-            update: yui2Update,
-            patterns: {
-                'yui2-': {
-                    configFn: function(me) {
-                        if (/-skin|reset|fonts|grids|base/.test(me.name)) {
-                            me.type = 'css';
-                            me.path = me.path.replace(/\.js/, '.css');
-                            // this makes skins in builds earlier than
-                            // 2.6.0 work as long as combine is false
-                            me.path = me.path.replace(/\/yui2-skin/,
-                                             '/assets/skins/sam/yui2-skin');
-                        }
+
+    groups[VERSION] = {};
+
+    groups.gallery = {
+        ext: false,
+        combine: true,
+        comboBase: COMBO_BASE,
+        update: galleryUpdate,
+        patterns: {
+            'gallery-': {},
+            'lang/gallery-': {},
+            'gallerycss-': {
+                type: 'css'
+            }
+        }
+    };
+
+    groups.yui2 = {
+        combine: true,
+        ext: false,
+        comboBase: COMBO_BASE,
+        update: yui2Update,
+        patterns: {
+            'yui2-': {
+                configFn: function(me) {
+                    if (/-skin|reset|fonts|grids|base/.test(me.name)) {
+                        me.type = 'css';
+                        me.path = me.path.replace(/\.js/, '.css');
+                        // this makes skins in builds earlier than
+                        // 2.6.0 work as long as combine is false
+                        me.path = me.path.replace(/\/yui2-skin/,
+                                            '/assets/skins/sam/yui2-skin');
                     }
                 }
             }
-        };
+        }
+    };
 
-        galleryUpdate();
-        yui2Update();
+    galleryUpdate();
+    yui2Update();
 
-        YUI.Env[VERSION] = META;
-    }());
-}
+    if (YUI.Env[VERSION]) {
+        Y.mix(META, YUI.Env[VERSION], false, [
+            'modules',
+            'groups',
+            'skin'
+        ], 0, true);
+    }
 
-
+    YUI.Env[VERSION] = META;
+}());
 /*jslint forin: true, maxlen: 350 */
 
 /**
@@ -9045,6 +9069,7 @@ Y.mix(YUI.Env[Y.version].modules, {
             "model",
             "model-list",
             "model-sync-rest",
+            "model-sync-local",
             "router",
             "view",
             "view-node-map"
@@ -9400,7 +9425,8 @@ Y.mix(YUI.Env[Y.version].modules, {
         "requires": [
             "attribute-core",
             "classnamemanager",
-            "node-base"
+            "node-base",
+            "escape"
         ]
     },
     "button-group": {
@@ -9462,6 +9488,10 @@ Y.mix(YUI.Env[Y.version].modules, {
             "nl",
             "pt-BR",
             "ru",
+            "zh-Hans",
+            "zh-Hans-CN",
+            "zh-Hant",
+            "zh-Hant-HK",
             "zh-HANT-TW"
         ],
         "requires": [
@@ -9585,6 +9615,14 @@ Y.mix(YUI.Env[Y.version].modules, {
             "console"
         ],
         "skinnable": true
+    },
+    "content-editable": {
+        "requires": [
+            "node-base",
+            "editor-selection",
+            "stylesheet",
+            "plugin"
+        ]
     },
     "controller": {
         "use": [
@@ -9859,6 +9897,13 @@ Y.mix(YUI.Env[Y.version].modules, {
             "classnamemanager"
         ]
     },
+    "datatable-highlight": {
+        "requires": [
+            "datatable-base",
+            "event-hover"
+        ],
+        "skinnable": true
+    },
     "datatable-message": {
         "lang": [
             "en",
@@ -9879,7 +9924,8 @@ Y.mix(YUI.Env[Y.version].modules, {
     },
     "datatable-paginator": {
         "lang": [
-            "en"
+            "en",
+            "fr"
         ],
         "requires": [
             "model",
@@ -10173,11 +10219,6 @@ Y.mix(YUI.Env[Y.version].modules, {
             "features"
         ]
     },
-    "dom-deprecated": {
-        "requires": [
-            "dom-base"
-        ]
-    },
     "dom-screen": {
         "requires": [
             "dom-base",
@@ -10260,6 +10301,12 @@ Y.mix(YUI.Env[Y.version].modules, {
     "editor-br": {
         "requires": [
             "editor-base"
+        ]
+    },
+    "editor-inline": {
+        "requires": [
+            "editor-base",
+            "content-editable"
         ]
     },
     "editor-lists": {
@@ -10492,6 +10539,7 @@ Y.mix(YUI.Env[Y.version].modules, {
         "requires": [
             "base",
             "node",
+            "plugin",
             "selector-css3",
             "yui-throttle"
         ]
@@ -10892,6 +10940,12 @@ Y.mix(YUI.Env[Y.version].modules, {
             "model"
         ]
     },
+    "model-sync-local": {
+        "requires": [
+            "model",
+            "json-stringify"
+        ]
+    },
     "model-sync-rest": {
         "requires": [
             "model",
@@ -10912,18 +10966,14 @@ Y.mix(YUI.Env[Y.version].modules, {
         "requires": [
             "event-base",
             "node-core",
-            "dom-base"
+            "dom-base",
+            "dom-style"
         ]
     },
     "node-core": {
         "requires": [
             "dom-core",
             "selector"
-        ]
-    },
-    "node-deprecated": {
-        "requires": [
-            "node-base"
         ]
     },
     "node-event-delegate": {
@@ -11685,13 +11735,13 @@ Y.mix(YUI.Env[Y.version].modules, {
     },
     "uploader-flash": {
         "requires": [
-            "swf",
+            "swfdetect",
+            "escape",
             "widget",
             "base",
             "cssbutton",
             "node",
             "event-custom",
-            "file-flash",
             "uploader-queue"
         ]
     },
@@ -11778,11 +11828,6 @@ Y.mix(YUI.Env[Y.version].modules, {
         ]
     },
     "widget-htmlparser": {
-        "requires": [
-            "widget-base"
-        ]
-    },
-    "widget-locale": {
         "requires": [
             "widget-base"
         ]
@@ -11899,7 +11944,7 @@ Y.mix(YUI.Env[Y.version].modules, {
         ]
     }
 });
-YUI.Env[Y.version].md5 = 'b48f48e0499b41d980deaefd4100d336';
+YUI.Env[Y.version].md5 = '3cf02e5f307a6e9470df4ea0dc7eb41e';
 
 
 }, '@VERSION@', {"requires": ["loader-base"]});

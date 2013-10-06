@@ -409,6 +409,7 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
      * @private
      */
     _addDateToSelection : function (oDate, index) {
+        oDate.setHours(12);
 
         if (this._canBeSelected(oDate)) {
 
@@ -1664,7 +1665,6 @@ Y.CalendarBase = Y.extend( CalendarBase, Y.Widget, {
          * customizing specific calendar cells.
          *
          * @attribute customRenderer
-         * @readOnly
          * @type Object
          * @default {}
          */

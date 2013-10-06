@@ -355,15 +355,15 @@ proto = {
                 _loaded: {},
                 // serviced: {},
                 // Regex in English:
-                // I'll start at the \b(simpleyui).
-                // 1. Look in the test string for "simpleyui" or "yui" or
+                // I'll start at the \b(yui).
+                // 1. Look in the test string for "yui" or
                 //    "yui-base" or "yui-davglass" or "yui-foobar" that comes after a word break.  That is, it
-                //    can't match "foyui" or "i_heart_simpleyui". This can be anywhere in the string.
+                //    can't match "foyui" or "i_heart_yui". This can be anywhere in the string.
                 // 2. After #1 must come a forward slash followed by the string matched in #1, so
-                //    "yui-base/yui-base" or "simpleyui/simpleyui" or "yui-pants/yui-pants".
+                //    "yui-base/yui-base" or "yui-pants/yui-pants".
                 // 3. The second occurence of the #1 token can optionally be followed by "-debug" or "-min",
                 //    so "yui/yui-min", "yui/yui-debug", "yui-base/yui-base-debug". NOT "yui/yui-tshirt".
-                // 4. This is followed by ".js", so "yui/yui.js", "simpleyui/simpleyui-min.js"
+                // 4. This is followed by ".js", so "yui/yui.js".
                 // 0. Going back to the beginning, now. If all that stuff in 1-4 comes after a "?" in the string,
                 //    then capture the junk between the LAST "&" and the string in 1-4.  So
                 //    "blah?foo/yui/yui.js" will capture "foo/" and "blah?some/thing.js&3.3.0/build/yui-davglass/yui-davglass.js"
@@ -375,13 +375,13 @@ proto = {
                 //   *               in fact, find as many sets of characters followed by a & as you can
                 //   ([^&]*)         capture the stuff after the last & in \1
                 // )?                but it's ok if all this ?junk&more_junk stuff isn't even there
-                // \b(simpleyui|     after a word break find either the string "simpleyui" or
-                //    yui(?:-\w+)?   the string "yui" optionally followed by a -, then more characters
-                // )                 and store the simpleyui or yui-* string in \2
-                // \/\2              then comes a / followed by the simpleyui or yui-* string in \2
+                // \b(               after a word break find either the string
+                //    yui(?:-\w+)?   "yui" optionally followed by a -, then more characters
+                // )                 and store the yui-* string in \2
+                // \/\2              then comes a / followed by the yui-* string in \2
                 // (?:-(min|debug))? optionally followed by "-min" or "-debug"
                 // .js               and ending in ".js"
-                _BASE_RE: /(?:\?(?:[^&]*&)*([^&]*))?\b(simpleyui|yui(?:-\w+)?)\/\2(?:-(min|debug))?\.js/,
+                _BASE_RE: /(?:\?(?:[^&]*&)*([^&]*))?\b(yui(?:-\w+)?)\/\2(?:-(min|debug))?\.js/,
                 parseBasePath: function(src, pattern) {
                     var match = src.match(pattern),
                         path, filter;
@@ -1520,6 +1520,7 @@ Y.log('Fetching loader: ' + config.base + config.loaderPath, 'info', 'yui');
         YUI._getLoadHook = null;
     }
 
+    YUI.Env[VERSION] = {};
 }());
 
 
@@ -2289,6 +2290,17 @@ L.isObject = function(o, failfn) {
 };
 
 /**
+ * Determines whether or not the provided value is a regexp.
+ * @method isRegExp
+ * @static
+ * @param value The value or object to test.
+ * @return {boolean} true if value is a regexp.
+ */
+L.isRegExp = function(value) {
+    return L.type(value) === 'regexp';
+};
+
+/**
  * Determines whether or not the provided item is a string.
  * @method isString
  * @static
@@ -2877,7 +2889,7 @@ Y.cached = function (source, cache, refetch) {
         var key = arguments.length > 1 ?
                 Array.prototype.join.call(arguments, CACHED_DELIMITER) :
                 String(arg);
-        
+
         /*jshint eqeqeq: false*/
         if (!(key in cache) || (refetch && cache[key] == refetch)) {
             cache[key] = source.apply(source, arguments);
@@ -3220,8 +3232,8 @@ O.hasKey = owns;
  * as the order in which they were defined.
  *
  * This method is an alias for the native ES5 `Object.keys()` method if
- * available and non-buggy. The Opera 11.50 and Android 2.3.x versions of 
- * `Object.keys()` have an inconsistency as they consider `prototype` to be 
+ * available and non-buggy. The Opera 11.50 and Android 2.3.x versions of
+ * `Object.keys()` have an inconsistency as they consider `prototype` to be
  * enumerable, so a non-native shim is used to rectify the difference.
  *
  * @example
@@ -3889,7 +3901,7 @@ YUI.Env.parseUA = function(subUA) {
                     o.mobile = m[0]; // ex: Opera Mini/2.0.4509/1316
                 }
             } else { // not opera or webkit
-                m = ua.match(/MSIE ([^;]*)|Trident.*; rv ([0-9.]+)/);
+                m = ua.match(/MSIE ([^;]*)|Trident.*; rv:([0-9.]+)/);
 
                 if (m && (m[1] || m[2])) {
                     o.ie = numberify(m[1] || m[2]);
@@ -3991,7 +4003,7 @@ Y.UA.compareVersions = function (a, b) {
 YUI.Env.aliases = {
     "anim": ["anim-base","anim-color","anim-curve","anim-easing","anim-node-plugin","anim-scroll","anim-xy"],
     "anim-shape-transform": ["anim-shape"],
-    "app": ["app-base","app-content","app-transitions","lazy-model-list","model","model-list","model-sync-rest","router","view","view-node-map"],
+    "app": ["app-base","app-content","app-transitions","lazy-model-list","model","model-list","model-sync-rest","model-sync-local","router","view","view-node-map"],
     "attribute": ["attribute-base","attribute-complex"],
     "attribute-events": ["attribute-observable"],
     "autocomplete": ["autocomplete-base","autocomplete-sources","autocomplete-list","autocomplete-plugin"],
